@@ -1,0 +1,10 @@
+# Ignorar todo
+*
+# No ignorar folders
+!*/
+
+# No ignorar archivos python
+!*.py
+
+# Para actualizar gitignore
+!.gitignore
