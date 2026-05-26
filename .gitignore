@@ -6,5 +6,8 @@
 # No ignorar archivos python
 !*.py
 
+# No ignorar Markdown
+!*.md
+
 # Para actualizar gitignore
 !.gitignore
