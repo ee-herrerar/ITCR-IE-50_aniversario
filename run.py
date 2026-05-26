@@ -1,6 +1,3 @@
-"""
-Punto de entrada de la experiencia interactiva del TEC.
-"""
 import sys
 import traceback
 from pathlib import Path
