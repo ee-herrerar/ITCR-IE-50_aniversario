@@ -1,0 +1,44 @@
+# Archivos de estado dinámicos del Watchdog
+state.json
+
+# Registro de accesos a las demos
+access_log.jsonl
+
+# Modelos pesados de MediaPipe (se descargan por aparte)
+data/hand_landmarker.task
+
+# ==========================================
+# Archivos de Sistema y Entornos Virtuales
+# ==========================================
+
+# Entornos virtuales de Python (si usas venv, .venv, env, etc.)
+.venv/
+venv/
+env/
+ENV/
+
+# Archivos del Sistema Operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs y Editores de código
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# ==========================================
+# Caché y Compilación de Python / OpenCV
+# ==========================================
+
+# Carpetas de caché __pycache__ en cualquier nivel
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/

@@ -17,7 +17,7 @@ import signal
 import logging
 from pathlib import Path
 
-# ── Configuración ────────────────────────────────────────────────────────────
+# Configuracion
 
 # Anclar siempre a la carpeta donde vive watchdog.py, no al CWD del proceso.
 _ROOT = Path(__file__).resolve().parent
@@ -29,8 +29,7 @@ RESTART_DELAY = 1.5      # Pausa entre reinicios tras un crash
 # Usa el mismo intérprete con el que se lanzó el watchdog (evita python vs python3)
 PYTHON = sys.executable
 
-# ── Logging ──────────────────────────────────────────────────────────────────
-
+# Logging 
 logging.basicConfig(
     level=logging.INFO,
     format="[WD %(asctime)s] %(message)s",
@@ -38,8 +37,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("watchdog")
 
-# ── Estado compartido (para el handler de señales) ───────────────────────────
-
+# Estado compartido (para el handler de señales)
 _current_process: subprocess.Popen | None = None
 _running = True
 
@@ -100,23 +98,34 @@ def read_target() -> str | None:
 
 def run_process(script: str, label: str) -> int:
     """
-    Lanza `script` con el intérprete actual, espera a que termine
-    y devuelve su código de salida.
-    El script puede ser absoluto o relativo a la raíz del proyecto.
+    Lanza `script` con el intérprete actual, asegura el PYTHONPATH local,
+    espera a que termine y devuelve su código de salida.
     """
     global _current_process
     path = Path(script)
     if not path.is_absolute():
         path = (_ROOT / path).resolve()
+    
     log.info("Iniciando %s → %s", label, path)
-    _current_process = subprocess.Popen([PYTHON, str(path)], cwd=str(_ROOT))
+    
+    # SOLUCIÓN CRÍTICA: Forzar la raíz del proyecto en el entorno del subproceso
+    env_modificado = os.environ.copy()
+    env_modificado["PYTHONPATH"] = str(_ROOT) + os.pathsep + env_modificado.get("PYTHONPATH", "")
+    
+    # Se ejecuta pasando el entorno modificado
+    _current_process = subprocess.Popen(
+        [PYTHON, str(path)], 
+        cwd=str(_ROOT), 
+        env=env_modificado
+    )
+    
     returncode = _current_process.wait()
     _current_process = None
     log.info("%s finalizado (exit=%d).", label, returncode)
     return returncode
 
 
-# ── Bucle principal ───────────────────────────────────────────────────────────
+# Bucle principal
 
 def watchdog_main() -> None:
     global _running
@@ -129,7 +138,7 @@ def watchdog_main() -> None:
     while _running:
         reset_state()
 
-        # ── Menú principal ────────────────────────────────────────────────
+        # Menú principal
         now = time.monotonic()
         # Si pasó suficiente tiempo desde el último crash, reseteamos contador
         if crash_count > 0 and (now - last_start) > CRASH_RESET:
@@ -159,7 +168,7 @@ def watchdog_main() -> None:
         else:
             crash_count = 0  # salida limpia → resetear
 
-        # ── Demo / app objetivo ───────────────────────────────────────────
+        # Demo / app objetivo
         target = read_target()
         reset_state()
 

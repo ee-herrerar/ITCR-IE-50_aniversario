@@ -1,7 +1,6 @@
-#README
+# Entorno Interactivo Para 50 Aniversario Escuela de Ingeniería Electrónica (Instituto Tecnológico de Costa Rica)
 
 ### Instalación de entorno
----
 Por seguridad, se recomienda utilizar el entorno de Python vía **pyenv** y un entorno virtual (puesto que Micromamba suele tener problemas al instalar `mediapipe`).
 
 ### Pasos para la configuración:
@@ -38,3 +37,11 @@ pip install mediapipe opencv-python watchdog
 ```
 
 ---
+
+### Inicializar folders y documentos
+**Ejecutar** el siguiente script para preparar los archivos requeridos al proyecto: 
+```bash
+py setup_files.py
+```
+
+Tendrán que corregir los enlaces a los videos y figuras a utilizar, puesto que descarga automáticamente esto, salvo el archivo task para mediapipe (NO TOCAR).

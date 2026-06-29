@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 def _ensure_project_on_path() -> None:
-    """Agrega la raíz del proyecto al sys.path si aún no está."""
+    """Agrega la raíz del proyecto al sys.path con máxima prioridad."""
     root = Path(__file__).resolve().parent
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
@@ -22,15 +22,16 @@ def _ensure_project_on_path() -> None:
 def main() -> int:
     _ensure_project_on_path()
 
-    from src.app import InteractiveApp
-
-    app = InteractiveApp()
     try:
+        # El import se realiza tras asegurar el path de la raíz
+        from src.app import InteractiveApp
+        app = InteractiveApp()
         app.run()
     except KeyboardInterrupt:
         # Ctrl+C se trata como cierre limpio
         print("\n[run] Experiencia finalizada por el usuario.")
-    except Exception as exc:                          # noqa: BLE001
+        return 0
+    except Exception as exc:
         print(f"\n[run] Error inesperado: {exc}", file=sys.stderr)
         traceback.print_exc()
         return 1   # Señal de crash al watchdog
